@@ -34,7 +34,7 @@ def ficha():
     return jsonify({"personagem": personagem, "pv": val_final_pv, "pe": val_final_pe, "sn": val_final_sn})
 
 
-@app.route("/api_retorna_dados/<string:personagem>", methods=["POST"])
+@app.route("/api_retorna_dados/<string:personagem>", methods=["GET"])
 def retorna_dados(personagem):
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
