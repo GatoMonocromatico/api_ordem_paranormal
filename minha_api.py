@@ -46,10 +46,8 @@ def retorna_dados(personagem):
 @app.after_request
 def add_headers(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
-    response.headers.add("Access-Control-Allow-Methods", "")
-    response.headers.add(
-        "Access-Control_Allow-Headers",
-        "Content-Type")
+    # response.headers.add("Access-Control-Allow-Methods", "")
+    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
 
     return response
 
