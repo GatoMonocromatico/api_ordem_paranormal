@@ -38,7 +38,7 @@ def ficha():
 def retorna_dados(personagem):
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
-    requisita_dados_personagem = requests.get(f"{bd}/{personagem}/.json")
+    requisita_dados_personagem = requests.get(f"{bd}/personagens/{personagem}/.json")
     dados_personagem = requisita_dados_personagem.json()
 
     return jsonify(dados_personagem)
