@@ -5,7 +5,7 @@ import json
 app = Flask(__name__)
 
 
-@app.route('/api_valor_pte', methods=["POST"])
+@app.route('/api_valor_pte', methods=["GET", "POST"])
 def ficha():
     informacoes = request.get_json()
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
@@ -38,15 +38,31 @@ def ficha():
 def retorna_dados(personagem):
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
+    print(personagem)
     requisita_dados_personagem = requests.get(f"{bd}/personagens/{personagem}/.json")
     dados_personagem = requisita_dados_personagem.json()
 
     return jsonify(dados_personagem)
 
+
+@app.route("/salvar_anotacoes", methods=["POST"])
+def salva_anotacoes():
+    informacoes = request.get_json()
+    personagem = informacoes["personagem"]
+    anotacoes = informacoes["anotações"]
+
+    bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
+
+    dados = {"anotações": anotacoes}
+    requisicao = requests.patch(f"{bd}/personagens/{personagem}/.json", data=json.dumps(dados))
+
+    return jsonify(requisicao.json())
+
+
 @app.after_request
 def add_headers(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
-    # response.headers.add("Access-Control-Allow-Methods", "")
+    # response.headers.add("Access-Control-Allow-Methods", "POST, GET")
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
 
     return response
