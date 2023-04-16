@@ -5,7 +5,7 @@ import json
 app = Flask(__name__)
 
 
-@app.route('/api_valor_pte', methods=["GET", "POST"])
+@app.route('/alterar/pte', methods=["GET", "POST"])
 def ficha():
     informacoes = request.get_json()
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
@@ -34,7 +34,7 @@ def ficha():
     return jsonify({"personagem": personagem, "pv": val_final_pv, "pe": val_final_pe, "sn": val_final_sn})
 
 
-@app.route("/api_retorna_dados/<string:personagem>", methods=["GET"])
+@app.route("/receber/<string:personagem>", methods=["GET"])
 def retorna_dados(personagem):
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
@@ -45,7 +45,7 @@ def retorna_dados(personagem):
     return jsonify(dados_personagem)
 
 
-@app.route("/salvar_anotacoes", methods=["POST"])
+@app.route("/alterar/anotacoes", methods=["POST"])
 def salva_anotacoes():
     informacoes = request.get_json()
     personagem = informacoes["personagem"]
