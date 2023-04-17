@@ -8,60 +8,198 @@ app = Flask(__name__)
 @app.route('/alterar/pte', methods=["GET", "POST"])
 def ficha():
     informacoes = request.get_json()
-    bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
     personagem = informacoes["personagem"]
+    acao = informacoes["ação"]
+    pte_mod = {"pv": str(informacoes["pv"]).replace("-", ""),
+               "pe": str(informacoes["pe"]).replace("-", ""),
+               "sn": str(informacoes["sn"]).replace("-", "")}
 
-    requisicao_dict_pte = requests.get(f'{bd}/personagens/{personagem}/.json')
-    dict_pte = requisicao_dict_pte.json()
+    bd = f"https://op-database-728c3-default-rtdb.firebaseio.com/personagens/{personagem}"
 
-    val_diminuir_pv, val_diminuir_pe, val_diminuir_sn = informacoes["pv"], informacoes["pe"], informacoes["sn"]
+    requisicao_pegar_pte = requests.get(f"{bd}/.json")
+    todas_informacoes = requisicao_pegar_pte.json()
 
-    if abs(val_diminuir_pv) > dict_pte["pv"]["maximo"]:
-        if val_diminuir_pv < 0:
-            val_diminuir_pv = dict_pte["pv"]["maximo"]*-1
-        else:
-            val_diminuir_pv = dict_pte["pv"]["maximo"]
+    dict_pte = {"pv": {"maximo": int(todas_informacoes["pv"]["maximo"]), "atual": int(todas_informacoes["pv"]["atual"])},
+                "pe": {"maximo": int(todas_informacoes["pe"]["maximo"]), "atual": int(todas_informacoes["pe"]["atual"])},
+                "sn": {"maximo": int(todas_informacoes["sn"]["maximo"]), "atual": int(todas_informacoes["sn"]["atual"])}}
 
-    if abs(val_diminuir_pe) > dict_pte["pe"]["maximo"]:
-        if val_diminuir_pe < 0:
-            val_diminuir_pe = dict_pte["pe"]["maximo"]*-1
-        else:
-            val_diminuir_pe = dict_pte["pe"]["maximo"]
+    for est in pte_mod:
+        valor_est = pte_mod[est]
 
-    if abs(val_diminuir_sn) > dict_pte["sn"]["maximo"]:
-        if val_diminuir_sn < 0:
-            val_diminuir_sn = dict_pte["sn"]["maximo"]*-1
-        else:
-            val_diminuir_sn = dict_pte["sn"]["maximo"]
+        try:
+            valor_est = int(valor_est)
 
-    val_atual_pv, val_atual_pe, val_atual_sn = dict_pte["pv"]["atual"], dict_pte["pe"]["atual"], dict_pte["sn"]["atual"]
+            if acao == "dano":
+                if valor_est > dict_pte[est]['atual']:
+                    valor_est = dict_pte[est]['atual']
 
-    val_final_pv = val_atual_pv - val_diminuir_pv
-    val_final_pe = val_atual_pe - val_diminuir_pe
-    val_final_sn = val_atual_sn - val_diminuir_sn
+                pte_mod[est] = valor_est * -1
 
-    dados_pv = {"atual": val_final_pv}
-    requests.patch(f"{bd}/personagens/{personagem}/pv/.json", data=json.dumps(dados_pv))
+            else:
+                if valor_est > dict_pte[est]['maximo'] - dict_pte[est]['atual']:
+                    valor_est = dict_pte[est]['maximo'] - dict_pte[est]['atual']
 
-    dados_pe = {"atual": val_final_pe}
-    requests.patch(f"{bd}/personagens/{personagem}/pe/.json", data=json.dumps(dados_pe))
+                pte_mod[est] = valor_est
 
-    dados_sn = {"atual": val_final_sn}
-    requests.patch(f"{bd}/personagens/{personagem}/sn/.json", data=json.dumps(dados_sn))
+        except ValueError:
+            valor_est = 0
+            pte_mod[est] = valor_est
 
-    return jsonify({"personagem": personagem, "pv": val_final_pv, "pe": val_final_pe, "sn": val_final_sn})
+    pv_final = dict_pte['pv']['atual'] + pte_mod["pv"]
+    pe_final = dict_pte['pe']['atual'] + pte_mod["pe"]
+    sn_final = dict_pte['sn']['atual'] + pte_mod["sn"]
+
+    dict_len_maximo_pte = {"maximo": 0, "atual": 0}
+
+    for pte in dict_pte:
+        for tipo in dict_pte[pte]:
+            numero = dict_pte[pte][tipo]
+
+            if len(str(numero)) > dict_len_maximo_pte[tipo]:
+                dict_len_maximo_pte[tipo] = len(str(numero))
+
+    for pte in dict_pte:
+        for tipo in dict_pte[pte]:
+            while len(str(dict_pte[pte][tipo])) < dict_len_maximo_pte[tipo]:
+                dict_pte[pte][tipo] = f"0{dict_pte[pte][tipo]}"
+
+            dict_pte[pte][tipo] = str(dict_pte[pte][tipo])
+
+    pv_formatado = f"{dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
+    pe_formatado = f"{dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
+    sn_formatado = f"{dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
+
+    dados = {"pv": pv_formatado,
+             "pe": pe_formatado,
+             "sn": sn_formatado}
+
+    requisicao_atualiza_pte = requests.patch(f"{bd}/.json", data=json.dumps(dados))
+
+    return requisicao_atualiza_pte.text
 
 
 @app.route("/receber/<string:personagem>", methods=["GET"])
 def retorna_dados(personagem):
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
-    print(personagem)
     requisita_dados_personagem = requests.get(f"{bd}/personagens/{personagem}/.json")
     dados_personagem = requisita_dados_personagem.json()
 
-    return jsonify(dados_personagem)
+    anotacoes = dados_personagem["anotações"]
+    atributos = dados_personagem["atributos"]
+    classe = dados_personagem["classe"]
+    defesa = dados_personagem["defesa"]
+    inventario = dados_personagem["inventario"]
+    nex = f"{dados_personagem['nex']}%"
+    origem = f'Origem: {dados_personagem["origem"]}'
+    pericias = dados_personagem["pericias"]
+    poderes = dados_personagem["poderes"]
+    rituais = dados_personagem["rituais"]
+    trilha = dados_personagem["trilha"]
+
+    dict_pte = {"pe": dados_personagem["pe"],
+                "pv": dados_personagem["pv"],
+                "sn": dados_personagem["sn"]}
+
+    if len(nex) == 2:
+        nex = f"0{nex}"
+
+    dict_len_maximo_pte = {"maximo": 0, "atual": 0}
+
+    for pte in dict_pte:
+        for tipo in dict_pte[pte]:
+            numero = dict_pte[pte][tipo]
+
+            if len(str(numero)) > dict_len_maximo_pte[tipo]:
+                dict_len_maximo_pte[tipo] = len(str(numero))
+
+    for pte in dict_pte:
+        for tipo in dict_pte[pte]:
+            while len(str(dict_pte[pte][tipo])) < dict_len_maximo_pte[tipo]:
+                dict_pte[pte][tipo] = f"0{dict_pte[pte][tipo]}"
+
+    for pericia in pericias:
+        nivel_treinamento = pericias[pericia]
+
+        if nivel_treinamento == "nt":
+            nivel_treinamento = "+0"
+        elif nivel_treinamento == "t":
+            nivel_treinamento = "+5"
+        elif nivel_treinamento == "v":
+            nivel_treinamento = "+10"
+        else:
+            nivel_treinamento = "+15"
+
+        pericias[pericia] = nivel_treinamento
+
+    if rituais != "":
+        for ritual in rituais:
+            circulo = f"{rituais[ritual][0]}º círculo"
+
+            rituais[ritual] = f"({circulo})\n\n"
+    else:
+        rituais = "Nenhum"
+
+    for poder in poderes:
+        custo = poderes[poder][0]
+
+        if custo == "0":
+            custo = "condição"
+        else:
+            custo += "PE"
+
+        poderes[poder] = custo
+
+    for item in inventario:
+        info = inventario[item]
+        carga = info[:info.find(" ")]
+        categoria = info.replace(f"{carga} ", "")
+
+        inventario[item] = f"(Carga: {carga}|Categoria: {categoria})"
+
+    classe_trilha_formatado = f"Classe: {classe}"
+    if trilha != "":
+        classe_trilha_formatado += f" - {trilha}"
+
+    inventario_formatado = ""
+    for item in inventario:
+        inventario_formatado += f"{item.capitalize()}\n{inventario[item]}\n\n"
+
+    pericias_formatado = ""
+    for pericia in pericias:
+        pericias_formatado += f"{pericia.capitalize()} {pericias[pericia]}\n"
+
+    poderes_formatado = ""
+    for poder in poderes:
+        poderes_formatado += f"{poder.capitalize()}\n({poderes[poder]})\n\n"
+
+    rituais_formatado = ""
+    if rituais != "Nenhum":
+        for ritual in rituais:
+            rituais_formatado += f"{ritual.capitalize()}\n{rituais[ritual]}"
+    else:
+        rituais_formatado = rituais
+
+    pv_formatado = f"{dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
+    pe_formatado = f"{dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
+    sn_formatado = f"{dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
+
+    retorno = {"pv": pv_formatado,
+               "pe": pe_formatado,
+               "sn": sn_formatado,
+               "anotações": anotacoes,
+               "atributos": atributos,
+               "classe_trilha": classe_trilha_formatado,
+               "defesa": f"Defesa: {defesa}",
+               "inventario": inventario_formatado,
+               "nex": nex,
+               "origem": origem.capitalize(),
+               "pericias": pericias_formatado,
+               "poderes": poderes_formatado,
+               "rituais": rituais_formatado}
+
+    return jsonify(retorno)
 
 
 @app.route("/alterar/anotacoes", methods=["POST"])
