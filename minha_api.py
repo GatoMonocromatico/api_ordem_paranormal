@@ -66,9 +66,9 @@ def ficha():
 
             dict_pte[pte][tipo] = str(dict_pte[pte][tipo])
 
-    pv_formatado = f"{dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
-    pe_formatado = f"{dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
-    sn_formatado = f"{dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
+    pv_formatado = f"PV: {dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
+    pe_formatado = f"PE: {dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
+    sn_formatado = f"SN: {dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
 
     dados = {"pv": pv_formatado,
              "pe": pe_formatado,
@@ -91,7 +91,7 @@ def retorna_dados(personagem):
     classe = dados_personagem["classe"]
     defesa = dados_personagem["defesa"]
     inventario = dados_personagem["inventario"]
-    nex = f"{dados_personagem['nex']}%"
+    nex = f"Nex: {dados_personagem['nex']}%"
     origem = f'Origem: {dados_personagem["origem"]}'
     pericias = dados_personagem["pericias"]
     poderes = dados_personagem["poderes"]
@@ -102,7 +102,7 @@ def retorna_dados(personagem):
                 "pv": dados_personagem["pv"],
                 "sn": dados_personagem["sn"]}
 
-    if len(nex) == 2:
+    if len(nex) == 7:
         nex = f"0{nex}"
 
     dict_len_maximo_pte = {"maximo": 0, "atual": 0}
@@ -181,9 +181,9 @@ def retorna_dados(personagem):
     else:
         rituais_formatado = rituais
 
-    pv_formatado = f"{dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
-    pe_formatado = f"{dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
-    sn_formatado = f"{dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
+    pv_formatado = f"PV: {dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
+    pe_formatado = f"PE: {dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
+    sn_formatado = f"SN: {dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
 
     retorno = {"pv": pv_formatado,
                "pe": pe_formatado,
