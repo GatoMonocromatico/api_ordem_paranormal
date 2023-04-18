@@ -70,17 +70,21 @@ def ficha():
     pe_formatado = f"PE: {dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
     sn_formatado = f"SN: {dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
 
-    dados = {"pv": pv_formatado,
-             "pe": pe_formatado,
-             "sn": sn_formatado}
+    dados_return = {"pv": pv_formatado,
+                    "pe": pe_formatado,
+                    "sn": sn_formatado}
 
-    requisicao_atualiza_pte = requests.patch(f"{bd}/.json", data=json.dumps(dados))
+    dados = {"pv": {"atual": pv_final, "maximo": int(todas_informacoes["pv"]["maximo"])},
+             "pe": {"atual": pe_final, "maximo": int(todas_informacoes["pe"]["maximo"])},
+             "sn": {"atual": sn_final, "maximo": int(todas_informacoes["sn"]["maximo"])}}
 
-    return requisicao_atualiza_pte.text
+    requests.patch(f"{bd}/.json", data=json.dumps(dados))
+
+    return jsonify(dados_return)
 
 
-@app.route("/receber/<string:personagem>", methods=["GET"])
-def retorna_dados(personagem):
+@app.route("/receber-formatado/<string:personagem>", methods=["GET"])
+def retorna_dados_formatado(personagem):
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
     requisita_dados_personagem = requests.get(f"{bd}/personagens/{personagem}/.json")
@@ -200,6 +204,16 @@ def retorna_dados(personagem):
                "rituais": rituais_formatado}
 
     return jsonify(retorno)
+
+
+@app.route("/receber/<string:personagem>", methods=["GET"])
+def retorna_dados(personagem):
+    bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
+
+    requisita_dados_personagem = requests.get(f"{bd}/personagens/{personagem}/.json")
+    dados_personagem = requisita_dados_personagem.json()
+
+    return jsonify(dados_personagem)
 
 
 @app.route("/alterar/anotacoes", methods=["POST"])
