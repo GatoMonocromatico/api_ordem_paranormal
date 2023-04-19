@@ -416,6 +416,16 @@ def altera_trilha():
     return requisicao.text
 
 
+@app.route("/receber/nomes")
+def retorna_nomes():
+    bd = "https://op-database-728c3-default-rtdb.firebaseio.com/nomes"
+
+    reuisicao = requests.get(f"{bd}/.json")
+    nomes = reuisicao.json()
+
+    return jsonify(nomes)
+
+
 @app.after_request
 def add_headers(response):
     response.headers.add("Access-Control-Allow-Origin", "*")
