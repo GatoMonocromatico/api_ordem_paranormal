@@ -66,9 +66,9 @@ def ficha():
 
             dict_pte[pte][tipo] = str(dict_pte[pte][tipo])
 
-    pv_formatado = f"PV: {dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
-    pe_formatado = f"PE: {dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
-    sn_formatado = f"SN: {dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
+    pv_formatado = f"PV: {pv_final}/{dict_pte['pv']['maximo']}"
+    pe_formatado = f"PE: {pe_final}/{dict_pte['pe']['maximo']}"
+    sn_formatado = f"SN: {sn_final}/{dict_pte['sn']['maximo']}"
 
     dados_return = {"pv": pv_formatado,
                     "pe": pe_formatado,
