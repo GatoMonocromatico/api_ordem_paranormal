@@ -32,7 +32,7 @@ def ficha():
 
             if acao == "dano":
                 if valor_est > dict_pte[est]['atual']:
-                    valor_est = dict_pte[est]['atual']
+                    valor_est = int(dict_pte[est]['atual'])
 
                 pte_mod[est] = valor_est * -1
 
@@ -40,7 +40,7 @@ def ficha():
                 if valor_est > dict_pte[est]['maximo'] - dict_pte[est]['atual']:
                     valor_est = dict_pte[est]['maximo'] - dict_pte[est]['atual']
 
-                pte_mod[est] = valor_est
+                pte_mod[est] = int(valor_est)
 
         except ValueError:
             valor_est = 0
@@ -49,6 +49,10 @@ def ficha():
     pv_final = dict_pte['pv']['atual'] + pte_mod["pv"]
     pe_final = dict_pte['pe']['atual'] + pte_mod["pe"]
     sn_final = dict_pte['sn']['atual'] + pte_mod["sn"]
+
+    pv_final = int(pv_final)
+    pe_final = int(pe_final)
+    sn_final = int(sn_final)
 
     dict_len_maximo_pte = {"maximo": 0, "atual": 0}
 
@@ -113,13 +117,15 @@ def retorna_dados_formatado(personagem):
 
     for pte in dict_pte:
         for tipo in dict_pte[pte]:
-            numero = dict_pte[pte][tipo]
+            numero = int(dict_pte[pte][tipo])
 
             if len(str(numero)) > dict_len_maximo_pte[tipo]:
                 dict_len_maximo_pte[tipo] = len(str(numero))
 
     for pte in dict_pte:
         for tipo in dict_pte[pte]:
+            dict_pte[pte][tipo] = int(dict_pte[pte][tipo])
+
             while len(str(dict_pte[pte][tipo])) < dict_len_maximo_pte[tipo]:
                 dict_pte[pte][tipo] = f"0{dict_pte[pte][tipo]}"
 
