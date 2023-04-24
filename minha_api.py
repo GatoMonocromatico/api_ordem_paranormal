@@ -50,9 +50,9 @@ def ficha():
     pe_final = dict_pte['pe']['atual'] + pte_mod["pe"]
     sn_final = dict_pte['sn']['atual'] + pte_mod["sn"]
 
-    pv_final = int(pv_final)
-    pe_final = int(pe_final)
-    sn_final = int(sn_final)
+    dict_pte['pv']['atual'] = pv_final
+    dict_pte['pe']['atual'] = pe_final
+    dict_pte['sn']['atual'] = sn_final
 
     dict_len_maximo_pte = {"maximo": 0, "atual": 0}
 
@@ -70,9 +70,9 @@ def ficha():
 
             dict_pte[pte][tipo] = str(dict_pte[pte][tipo])
 
-    pv_formatado = f"PV: {pv_final}/{dict_pte['pv']['maximo']}"
-    pe_formatado = f"PE: {pe_final}/{dict_pte['pe']['maximo']}"
-    sn_formatado = f"SN: {sn_final}/{dict_pte['sn']['maximo']}"
+    pv_formatado = f"PV: {dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
+    pe_formatado = f"PE: {dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
+    sn_formatado = f"SN: {dict_pte['sn']['atual']}/{dict_pte['sn']['maximo']}"
 
     dados_return = {"pv": pv_formatado,
                     "pe": pe_formatado,
