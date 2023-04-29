@@ -99,7 +99,7 @@ def retorna_dados_formatado(personagem):
     classe = dados_personagem["classe"]
     defesa = dados_personagem["defesa"]
     inventario = dados_personagem["inventario"]
-    nex = f"Nex: {dados_personagem['nex']}%"
+    nex = f"{dados_personagem['nex']}%"
     origem = f'Origem: {dados_personagem["origem"]}'
     pericias = dados_personagem["pericias"]
     poderes = dados_personagem["poderes"]
@@ -110,8 +110,10 @@ def retorna_dados_formatado(personagem):
                 "pv": dados_personagem["pv"],
                 "sn": dados_personagem["sn"]}
 
-    if len(nex) == 7:
+    if len(nex) == 2:
         nex = f"0{nex}"
+
+    nex = f"Nex: {nex}"
 
     dict_len_maximo_pte = {"maximo": 0, "atual": 0}
 
@@ -180,16 +182,12 @@ def retorna_dados_formatado(personagem):
     for pericia in pericias:
         pericias_formatado += f"{pericia.capitalize()} {pericias[pericia]}\n"
 
-    poderes_formatado = ""
     for poder in poderes:
-        poderes_formatado += f"{poder.capitalize()}\n({poderes[poder]})\n\n"
+        poderes[poder] = f"{poder.capitalize()}\n{poderes[poder]}"
 
-    rituais_formatado = ""
     if rituais != "Nenhum":
         for ritual in rituais:
-            rituais_formatado += f"{ritual.capitalize()}\n{rituais[ritual]}"
-    else:
-        rituais_formatado = rituais
+            rituais[ritual] = f"{ritual.capitalize()}\n{rituais[ritual]}"
 
     pv_formatado = f"PV: {dict_pte['pv']['atual']}/{dict_pte['pv']['maximo']}"
     pe_formatado = f"PE: {dict_pte['pe']['atual']}/{dict_pte['pe']['maximo']}"
@@ -206,8 +204,8 @@ def retorna_dados_formatado(personagem):
                "nex": nex,
                "origem": origem.capitalize(),
                "pericias": pericias_formatado,
-               "poderes": poderes_formatado,
-               "rituais": rituais_formatado}
+               "poderes": poderes,
+               "rituais": rituais}
 
     return jsonify(retorno)
 
