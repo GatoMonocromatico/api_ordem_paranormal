@@ -219,6 +219,24 @@ def retorna_dados(personagem):
 
     return jsonify(dados_personagem)
 
+@app.route("/receber/info", methods=["GET"])
+def retorna_dados():
+    bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
+
+    informacoes = request.get_json()
+    tipo = informacoes["tipo"]
+    habilidade = informacoes["habilidade"].replace("_", "")
+
+    requisita_info = requests.get(f"{bd}/info/{tipo}/{habilidade}/.json")
+    info = requisita_info.json()
+
+    if tipo == "rituais":
+        iterador = 2
+    else:
+        iterador = 1
+
+    return jsonify(info[iterador])
+
 
 @app.route("/alterar/anotacoes", methods=["POST"])
 def salva_anotacoes():
