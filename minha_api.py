@@ -220,7 +220,7 @@ def retorna_dados(personagem):
     return jsonify(dados_personagem)
 
 @app.route("/receber/info", methods=["GET"])
-def retorna_dados():
+def retorna_info():
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
 
     informacoes = request.get_json()
