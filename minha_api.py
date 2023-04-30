@@ -96,15 +96,18 @@ def retorna_dados_formatado(personagem):
 
     anotacoes = dados_personagem["anotações"]
     atributos = dados_personagem["atributos"]
-    classe = dados_personagem["classe"]
     defesa = dados_personagem["defesa"]
     inventario = dados_personagem["inventario"]
     nex = f"{dados_personagem['nex']}%"
-    origem = f'Origem: {dados_personagem["origem"]}'
     pericias = dados_personagem["pericias"]
     poderes = dados_personagem["poderes"]
     rituais = dados_personagem["rituais"]
+    classe = dados_personagem["classe"]
     trilha = dados_personagem["trilha"]
+    origem = dados_personagem["origem"]
+    afinidade = dados_personagem["afinidade"]
+
+    infos = f"Afinidade\n{afinidade}\n\nClasse\n{classe}\n\nOrigem\n{origem}\n\nTrilha\n{trilha}"
 
     dict_pte = {"pe": dados_personagem["pe"],
                 "pv": dados_personagem["pv"],
@@ -157,7 +160,7 @@ def retorna_dados_formatado(personagem):
         custo = poderes[poder][0]
 
         if custo == "0":
-            custo = "condição"
+            custo = "(condição/passivo)"
         else:
             custo += "PE"
 
@@ -169,10 +172,6 @@ def retorna_dados_formatado(personagem):
         categoria = info.replace(f"{carga} ", "")
 
         inventario[item] = f"(Carga: {carga}|Categoria: {categoria})"
-
-    classe_trilha_formatado = f"Classe: {classe}"
-    if trilha != "":
-        classe_trilha_formatado += f" - {trilha}"
 
     inventario_formatado = ""
     for item in inventario:
@@ -198,11 +197,10 @@ def retorna_dados_formatado(personagem):
                "sn": sn_formatado,
                "anotações": anotacoes,
                "atributos": atributos,
-               "classe_trilha": classe_trilha_formatado,
+               "infos": infos,
                "defesa": f"Defesa: {defesa}",
                "inventario": inventario_formatado,
                "nex": nex,
-               "origem": origem.capitalize(),
                "pericias": pericias_formatado,
                "poderes": poderes,
                "rituais": rituais}
