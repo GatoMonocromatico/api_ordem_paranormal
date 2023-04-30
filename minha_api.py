@@ -225,7 +225,7 @@ def retorna_info():
 
     informacoes = request.get_json()
     tipo = informacoes["tipo"]
-    habilidade = informacoes["habilidade"].replace("_", "")
+    habilidade = informacoes["habilidade"].replace("_", " ").lower()
 
     requisita_info = requests.get(f"{bd}/info/{tipo}/{habilidade}/.json")
     info = requisita_info.json()
