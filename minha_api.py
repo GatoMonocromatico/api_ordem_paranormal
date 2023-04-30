@@ -217,6 +217,18 @@ def retorna_dados(personagem):
 
     return jsonify(dados_personagem)
 
+@app.route("/receber/pericias", methods=["GET"])
+def retorna_pericias():
+    bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
+
+    personagem = request.get_json()
+    personagem = personagem["personagem"]
+
+    requisita_pericias = requests.get(f"{bd}/personagens/{personagem}/pericias/.json")
+    dados_personagem = requisita_pericias.json()
+
+    return jsonify(dados_personagem)
+
 @app.route("/receber/info", methods=["GET", "POST"])
 def retorna_info():
     bd = "https://op-database-728c3-default-rtdb.firebaseio.com/"
