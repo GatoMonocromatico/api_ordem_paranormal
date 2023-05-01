@@ -107,7 +107,7 @@ def retorna_dados_formatado(personagem):
     origem = dados_personagem["origem"]
     afinidade = dados_personagem["afinidade"]
 
-    infos = f"Afinidade\n{afinidade}\n\nClasse\n{classe}\n\nOrigem\n{origem}\n\nTrilha\n{trilha}"
+    infos = f"Afinidade:\n{afinidade}\n\nClasse:\n{classe}\n\nOrigem:\n{origem}\n\nTrilha:\n{trilha}"
 
     dict_pte = {"pe": dados_personagem["pe"],
                 "pv": dados_personagem["pv"],
